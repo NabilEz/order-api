@@ -8,7 +8,6 @@ public sealed interface OrderStatus
         OrderStatus.Processing,
         OrderStatus.Shipped,
         OrderStatus.Cancelled {
-//todo njbhj
     record Pending(LocalDateTime createdAt)
             implements OrderStatus {}
 
