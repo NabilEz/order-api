@@ -19,3 +19,5 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_SECONDS: 900
