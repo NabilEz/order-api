@@ -6,6 +6,7 @@ import com.nabil.order_api.domain.OrderRepository;
 import com.nabil.order_api.domain.OrderStatus;
 import com.nabil.order_api.dto.CreateOrderRequest;
 import com.nabil.order_api.dto.OrderResponse;
+import com.nabil.order_api.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,13 +38,12 @@ public class OrderService {
     public OrderResponse findById(Long id) {
         return repository.findById(id)
                 .map(o -> toResponse(o, new OrderStatus.Pending(o.getCreatedAt())))
-                .orElseThrow(() -> new RuntimeException("Ordine non trovato: " + id));
-    }
+                .orElseThrow(() -> new ResourceNotFoundException("Ordine", id));    }
 
     @Transactional
     public OrderResponse ship(Long id, String courier, String trackingCode) {
         var order = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ordine non trovato: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordine", id));
         order.setStatusType(Order.StatusType.SHIPPED);
         var status = new OrderStatus.Shipped(
                 courier, trackingCode,
@@ -55,7 +55,7 @@ public class OrderService {
     @Transactional
     public OrderResponse cancel(Long id, String reason) {
         var order = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ordine non trovato: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordine", id));
         order.setStatusType(Order.StatusType.CANCELLED);
         var status = new OrderStatus.Cancelled(reason, java.time.LocalDateTime.now());
         return toResponse(repository.save(order), status);
