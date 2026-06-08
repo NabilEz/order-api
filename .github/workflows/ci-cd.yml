@@ -12,37 +12,37 @@ env:
 
 jobs:
 
-build-and-test:
-  name: Build & Test
-  runs-on: ubuntu-latest
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout codice
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout codice
+        uses: actions/checkout@v4
 
-    - name: Setup Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Setup Java 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
 
-    - name: Build e test
-      run: ./mvnw clean verify
-      env:
-        JWT_SECRET: chiave-segreta-di-test-lunga-almeno-32-caratteri
-        TESTCONTAINERS_RYUK_DISABLED: true
-        DOCKER_HOST: unix:///var/run/docker.sock
+      - name: Build e test
+        run: ./mvnw clean verify
+        env:
+          JWT_SECRET: chiave-segreta-di-test-lunga-almeno-32-caratteri
+          TESTCONTAINERS_RYUK_DISABLED: true
+          DOCKER_HOST: unix:///var/run/docker.sock
 
-    - name: Pubblica report test
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-reports
-        path: target/surefire-reports/
+      - name: Pubblica report test
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: target/surefire-reports/
 
   build-image:
     name: Build Docker Image
